@@ -1199,7 +1199,7 @@
             document.getElementById('feedbackSuccess').style.display = 'none';
         }
 
-        function submitFeedback() {
+        async function submitFeedback() {
             const email = document.getElementById('feedbackEmail').value.trim();
             const feedback = document.getElementById('feedbackText').value.trim();
 
@@ -1208,46 +1208,46 @@
                 return;
             }
 
-            // Create feedback message
-            const message = `
-Feedback from Moonphase Tracker
-Date: ${new Date().toLocaleString()}
-Email: ${email || 'Not provided'}
-Location: ${currentLocation}
-
-Message:
-${feedback}
-            `;
-
-            // Option 1: Send via email (requires backend)
-            // sendFeedbackEmail(email, feedback);
-
-            // Option 2: Log to console (for development)
-            console.log('Feedback Submitted:', message);
-
-            // Option 3: Store in localStorage (client-side)
-            const feedbackData = {
-                timestamp: new Date().toISOString(),
-                email: email,
-                feedback: feedback,
-                location: currentLocation
-            };
-
-            let allFeedback = JSON.parse(localStorage.getItem('moonphaseFeedback')) || [];
-            allFeedback.push(feedbackData);
-            localStorage.setItem('moonphaseFeedback', JSON.stringify(allFeedback));
-
-            // Show success message
-            document.getElementById('feedbackSuccess').style.display = 'block';
+            // Disable inputs during submission
             document.getElementById('feedbackText').disabled = true;
             document.getElementById('feedbackEmail').disabled = true;
 
-            // Close modal after 2 seconds
-            setTimeout(() => {
-                closeFeedbackModal();
+            try {
+                // Send feedback to API
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email || null,
+                        feedback: feedback,
+                        location: currentLocation
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('feedbackSuccess').style.display = 'block';
+                    console.log('Feedback submitted successfully:', data);
+
+                    // Close modal after 2 seconds
+                    setTimeout(() => {
+                        closeFeedbackModal();
+                        document.getElementById('feedbackText').disabled = false;
+                        document.getElementById('feedbackEmail').disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Failed to submit feedback');
+                }
+            } catch (error) {
+                console.error('Feedback submission error:', error);
+                alert('Error submitting feedback. Please try again.');
                 document.getElementById('feedbackText').disabled = false;
                 document.getElementById('feedbackEmail').disabled = false;
-            }, 2000);
+            }
         }
 
         // Close modal when clicking outside
