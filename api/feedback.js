@@ -1,6 +1,6 @@
-import { sql } from '@vercel/postgres';
+const { sql } = require('@vercel/postgres');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -24,14 +24,14 @@ export default async function handler(req, res) {
         NOW(),
         ${req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || 'Unknown'}
       )
-      RETURNING id, created_at;
+      RETURNING id, timestamp;
     `;
 
     return res.status(200).json({
       success: true,
       message: 'Feedback received! Thank you for your input.',
       id: result.rows[0].id,
-      timestamp: result.rows[0].created_at
+      timestamp: result.rows[0].timestamp
     });
 
   } catch (error) {
@@ -41,4 +41,4 @@ export default async function handler(req, res) {
       details: error.message
     });
   }
-}
+};
