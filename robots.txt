@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /admin/
+Disallow: /*.json$
+
+# Allow crawling of essential files
+Allow: /index.html
+Allow: /sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+
+Sitemap: https://moonphase.example.com/sitemap.xml

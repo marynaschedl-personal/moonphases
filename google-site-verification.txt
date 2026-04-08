@@ -1,0 +1,10 @@
+google-site-verification: google_verification_code_here
+
+Instructions for Google Search Console verification:
+1. Replace "google_verification_code_here" with your actual verification code from Google Search Console
+2. Upload this file to your root directory
+3. Verify the file in Google Search Console
+
+Alternative verification methods:
+- Add meta tag to index.html <head>: <meta name="google-site-verification" content="your_code_here" />
+- Add DNS TXT record to your domain
