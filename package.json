@@ -9,6 +9,7 @@
     "start": "echo 'Deploy to Vercel'"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "@vercel/postgres": "latest"
   },
   "keywords": [
